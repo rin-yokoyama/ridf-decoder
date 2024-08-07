@@ -76,7 +76,7 @@ bool TArtParserRIDF::GetNextEvent(TArtRawEventObject *raweve)
   { // scanning comments given at beginning
 
     fHeader.BYTE = *(unsigned long long int *)&fBlockBuffer[fNext];
-    fHeader.BIT.Print(); // print out only in the case of debugging mode
+    // fHeader.BIT.Print(); // print out only in the case of debugging mode
     fOffset = fNext;
     fPrev = fNext;
     fNext = fOffset + fHeader.BIT.fSize * sizeof(short);
