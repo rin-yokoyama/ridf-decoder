@@ -7,12 +7,6 @@
 #include "mira_streaming.hpp"
 #include "ParquetWriter.hpp"
 
-// word size for RIDF (=4)
-static const size_t kWordSize = 4;
-
-// Global variables for Kafka (assuming they are defined somewhere else)
-bool kafka_ready = false; // Placeholder
-
 /** prints usage **/
 void usage(char *argv0)
 {
@@ -68,6 +62,7 @@ int main(int argc, char **argv)
     if (bootstrap_servers == "default")
     {
         std::cerr << "[ridfstream_decoder]: No bootstrap.servers specified\nexitting..." << std::endl;
+        usage(argv[0]);
         return 1;
     }
 
