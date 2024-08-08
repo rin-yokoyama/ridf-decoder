@@ -12,6 +12,7 @@
 #include "TArtEventStore.hh"
 #include "TArtEventInfo.hh"
 #include "TArtFileDataSource.hh"
+#include "TArtKafkaDataSource.hh"
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
@@ -99,6 +100,12 @@ bool TArtEventStore::Open(const char *filename)
   return true;
 }
 
+bool TArtEventStore::Open(const std::string &bootstrap_servers, const std::string &topic_name, const std::string &group_id, const std::string &client_id, const u_int64_t &timestamp)
+{
+  fDataSource = new TArtKafkaDataSource(bootstrap_servers, topic_name, group_id, client_id, timestamp);
+  return true;
+}
+
 int TArtEventStore::SkipEvent(int neve)
 {
   int nskip = 0;
@@ -146,6 +153,11 @@ bool TArtEventStore::GetNextEvent()
         std::cout << "TArtEventStore: Interrupted... Stop to get data." << std::endl;
         return false;
       }
+    }
+    if (fDataSource->GetDataSourceType() == kSM)
+    {
+      std::cout << "TArtEventStore: waiting for a new Kafka message..." << std::endl;
+      sleep(1);
     }
   }
 

@@ -114,17 +114,18 @@ std::shared_ptr<arrow::Table> ParquetWriter::GenerateTable()
     return table;
 }
 
-// std::shared_ptr<arrow::RecordBatch> ParquetWriter::GenerateRecordBatch(const std::vector<EventData> &data)
-//{
-//     Fill(data);
-//     // Finalize the arrays
-//     std::shared_ptr<arrow::Array> event_id_array, ts_array, list_array;
-//     PARQUET_THROW_NOT_OK(event_id_builder_->Finish(&event_id_array));
-//     PARQUET_THROW_NOT_OK(ts_builder_->Finish(&ts_array));
-//     PARQUET_THROW_NOT_OK(list_builder_->Finish(&list_array));
-//     // Create the record batch
-//     return arrow::RecordBatch::Make(schema_, list_builder_->length(), {event_id_array, ts_array, list_array});
-// }
+std::shared_ptr<arrow::RecordBatch> ParquetWriter::GenerateRecordBatch()
+{
+    // Finalize the arrays
+    std::shared_ptr<arrow::Array> event_id_array, runnumber_array, ts_array, seg_list_array;
+    PARQUET_THROW_NOT_OK(event_id_builder_->Finish(&event_id_array));
+    PARQUET_THROW_NOT_OK(runnumber_builder_->Finish(&runnumber_array));
+    PARQUET_THROW_NOT_OK(ts_builder_->Finish(&ts_array));
+    PARQUET_THROW_NOT_OK(seg_list_builder_->Finish(&seg_list_array));
+
+    // Create the record batch
+    return arrow::RecordBatch::Make(schema_, seg_list_builder_->length(), {event_id_array, runnumber_array, ts_array, seg_list_array});
+}
 
 void ParquetWriter::WriteParquetFile(std::string name, std::shared_ptr<arrow::Table> table)
 {
@@ -133,8 +134,12 @@ void ParquetWriter::WriteParquetFile(std::string name, std::shared_ptr<arrow::Ta
         outfile,
         arrow::io::FileOutputStream::Open(name));
 
+    auto writer_properties = parquet::WriterProperties::Builder()
+                                 .compression(parquet::Compression::ZSTD)
+                                 ->build();
+
     PARQUET_THROW_NOT_OK(
-        parquet::arrow::WriteTable(*table, pool_, outfile));
+        parquet::arrow::WriteTable(*table, pool_, outfile, 1048576L, writer_properties));
 }
 
 std::shared_ptr<arrow::Buffer> ParquetWriter::WriteStream(std::shared_ptr<arrow::Table> table)
@@ -144,6 +149,15 @@ std::shared_ptr<arrow::Buffer> ParquetWriter::WriteStream(std::shared_ptr<arrow:
     arrow::TableBatchReader reader(table);
     std::shared_ptr<arrow::RecordBatch> batch;
     reader.ReadNext(&batch);
+    auto writer = arrow::ipc::MakeStreamWriter(sink, schema_).ValueOrDie();
+    auto status = writer->WriteRecordBatch(*batch.get());
+    status = writer->Close();
+    return *sink->Finish();
+}
+
+std::shared_ptr<arrow::Buffer> ParquetWriter::WriteStream(std::shared_ptr<arrow::RecordBatch> batch)
+{
+    auto sink = arrow::io::BufferOutputStream::Create().ValueOrDie();
     auto writer = arrow::ipc::MakeStreamWriter(sink, schema_).ValueOrDie();
     auto status = writer->WriteRecordBatch(*batch.get());
     status = writer->Close();

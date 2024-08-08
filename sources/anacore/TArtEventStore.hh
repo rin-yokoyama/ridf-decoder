@@ -38,6 +38,7 @@ public:
   virtual bool Open();
   // virtual bool Open(const int sid);
   virtual bool Open(const char *filename);
+  virtual bool Open(const std::string &bootstrap_servers, const std::string &topic_name, const std::string &group_id, const std::string &client_id, const u_int64_t &timestamp);
   // virtual bool Open(const char *hostname, const int port);
   void ClearData();
 

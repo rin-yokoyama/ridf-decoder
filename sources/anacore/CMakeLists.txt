@@ -14,6 +14,7 @@ set(HEADERS
     TArtRunInfo.hh
     TArtEventStore.hh
     TArtFileDataSource.hh
+    TArtKafkaDataSource.hh
     TArtStoreManager.hh
     TArtEventInfo.hh
     TArtParserRIDF.hh
@@ -63,6 +64,7 @@ set(SOURCES
     TArtParser.cc
     TArtParserRIDF.cc
     TArtFileDataSource.cc
+    TArtKafkaDataSource.cc
     TArtEventStore.cc
     TArtStoreManager.cc
     TArtDecoderV830.cc
@@ -105,7 +107,7 @@ target_include_directories(${LIB_NAME}
         $<INSTALL_INTERFACE:include>
 )
 
-target_link_libraries(${LIB_NAME} z)
+target_link_libraries(${LIB_NAME} z rdkafka)
 
 set_target_properties(
     ${LIB_NAME}

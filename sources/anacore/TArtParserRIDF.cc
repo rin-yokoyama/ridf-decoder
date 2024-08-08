@@ -37,8 +37,22 @@ TArtParserRIDF::~TArtParserRIDF()
 
 void TArtParserRIDF::GetNextBlock(TArtDataSource *source)
 {
-
-  // TArtCore::Debug("TArtParserRIDF", "GetNextBlock");
+  /// Kafka source
+  if (source->GetDataSourceType() == kSM)
+  {
+    /// read byte data from message
+    fBlockSize = source->Read((char *)fBlockBuffer, 0);
+    if (fBlockSize < sizeof(fHeader))
+    {
+      source->SetBlockStatus(kEOF);
+      fHeader.BYTE = 0;
+      return;
+    }
+    /// copy header bytes to fHeader
+    std::memcpy(&fHeader, fBlockBuffer, sizeof(fHeader));
+    fEOB = false;
+    return;
+  }
 
   fOffset = 0;
   fNext = 0;

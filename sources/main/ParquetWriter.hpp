@@ -22,9 +22,10 @@ public:
     virtual ~ParquetWriter() {}
 
     std::shared_ptr<arrow::Table> GenerateTable();
-    // std::shared_ptr<arrow::RecordBatch> GenerateRecordBatch(const std::vector<mira::EventData> &data);
+    std::shared_ptr<arrow::RecordBatch> GenerateRecordBatch();
     void WriteParquetFile(std::string name, std::shared_ptr<arrow::Table> table);
     std::shared_ptr<arrow::Buffer> WriteStream(std::shared_ptr<arrow::Table> table);
+    std::shared_ptr<arrow::Buffer> WriteStream(std::shared_ptr<arrow::RecordBatch> batch);
 
     void Fill(TArtRawEventObject *rawevent, const u_int64_t &event_id);
 
