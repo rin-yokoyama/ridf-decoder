@@ -50,6 +50,8 @@ void TArtParserRIDF::GetNextBlock(TArtDataSource *source)
     }
     /// copy header bytes to fHeader
     std::memcpy(&fHeader, fBlockBuffer, sizeof(fHeader));
+    fBlockSize = fHeader.BIT.fSize * sizeof(short) - sizeof(fHeader);
+    fBlockBuffer = fBlockBuffer + sizeof(fHeader);
     fEOB = false;
     return;
   }

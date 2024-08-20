@@ -31,7 +31,7 @@ int main(int argc, char **argv)
     u_int32_t batch_length = 1;                  // Number of events in an output record batch
 
     int opt = 0;
-    while ((opt = getopt(argc, argv, "i:o:n:")) != -1)
+    while ((opt = getopt(argc, argv, "i:o:s:g:t:b:")) != -1)
     {
         switch (opt)
         {
@@ -87,7 +87,7 @@ int main(int argc, char **argv)
 
         if (!(n_event % batch_length))
         {
-            auto record_batch = writer.GenerateRecordBatch();
+            auto record_batch = writer.GenerateTable();
             auto stream = writer.WriteStream(record_batch);
             mira::produce(topic, stream->size(), (void *)stream->data());
         }

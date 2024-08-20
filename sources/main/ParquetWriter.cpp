@@ -144,14 +144,16 @@ void ParquetWriter::WriteParquetFile(std::string name, std::shared_ptr<arrow::Ta
 
 std::shared_ptr<arrow::Buffer> ParquetWriter::WriteStream(std::shared_ptr<arrow::Table> table)
 {
-    // std::shared_ptr<arrow::io::BufferOutputStream> sink;
     auto sink = arrow::io::BufferOutputStream::Create().ValueOrDie();
     arrow::TableBatchReader reader(table);
     std::shared_ptr<arrow::RecordBatch> batch;
-    reader.ReadNext(&batch);
-    auto writer = arrow::ipc::MakeStreamWriter(sink, schema_).ValueOrDie();
-    auto status = writer->WriteRecordBatch(*batch.get());
-    status = writer->Close();
+    auto readState = reader.ReadNext(&batch);
+    if (readState.ok() && batch.get())
+    {
+        auto writer = arrow::ipc::MakeStreamWriter(sink, schema_).ValueOrDie();
+        writer->WriteRecordBatch(*batch.get());
+        writer->Close();
+    }
     return *sink->Finish();
 }
 
