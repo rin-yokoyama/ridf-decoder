@@ -155,11 +155,11 @@ bool TArtEventStore::GetNextEvent()
         return false;
       }
     }
-    if (fDataSource->GetDataSourceType() == kSM)
-    {
-      std::cout << "TArtEventStore: waiting for a new Kafka message..." << std::endl;
-      sleep(1);
-    }
+    // if (!getdata && fDataSource->GetDataSourceType() == kSM)
+    //{
+    //   std::cout << "TArtEventStore: waiting for a new Kafka message..." << std::endl;
+    //   sleep(1);
+    // }
   }
 
   ei->SetRunNumber(rawevent_->GetRunNumber());

@@ -37,6 +37,8 @@ TArtParserRIDF::~TArtParserRIDF()
 
 void TArtParserRIDF::GetNextBlock(TArtDataSource *source)
 {
+  fOffset = 0;
+  fNext = 0;
   /// Kafka source
   if (source->GetDataSourceType() == kSM)
   {
@@ -55,9 +57,6 @@ void TArtParserRIDF::GetNextBlock(TArtDataSource *source)
     fEOB = false;
     return;
   }
-
-  fOffset = 0;
-  fNext = 0;
 
   if (!source->IsPrepared())
     return;

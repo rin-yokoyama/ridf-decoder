@@ -68,6 +68,10 @@ int TArtKafkaDataSource::Read(char *buf, const int &size, const int &offset)
             }
         }
     }
+    else
+    {
+        std::cout << "TArtKafkaDataSource: waiting for the Kafka stream... " << std::endl;
+    }
     return len;
 }
 
