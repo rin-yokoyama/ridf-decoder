@@ -37,6 +37,7 @@
 // #include "TArtDecoderVmeEasyroc.hh"
 #include "TArtDecoderRPV130.hh"
 #include "TArtDecoderSIS3820.hh"
+#include "TArtDecoderTC842.hh"
 
 TArtDecoderFactory::TArtDecoderFactory()
 {
@@ -81,6 +82,7 @@ void TArtDecoderFactory::Register()
    // Register(TArtDecoderVmeEasyroc::Instance());
    Register(TArtDecoderRPV130::Instance());
    Register(TArtDecoderSIS3820::Instance());
+   Register(TArtDecoderTC842::Instance());
 }
 
 TArtDecoderFactory *TArtDecoderFactory::Instance()

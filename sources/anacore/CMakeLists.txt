@@ -50,6 +50,7 @@ set(HEADERS
     TArtDecoderA3100.hh
     TArtDecoderRPV130.hh
     TArtDecoderSIS3820.hh
+    TArtDecoderTC842.hh
 )
 
 set(SOURCES
@@ -97,6 +98,7 @@ set(SOURCES
     TArtDecoderA3100.cc
     TArtDecoderRPV130.cc
     TArtDecoderSIS3820.cc
+    TArtDecoderTC842.cc
 )
 
 add_library(${LIB_NAME} ${SOURCES})

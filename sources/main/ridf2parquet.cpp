@@ -73,7 +73,6 @@ int main(int argc, char **argv)
     while (estore->GetNextEvent())
     {
         writer.Fill(rawevent, n_event);
-
         estore->ClearData();
         ++n_event;
         if (flag && (n_event > max_event))
