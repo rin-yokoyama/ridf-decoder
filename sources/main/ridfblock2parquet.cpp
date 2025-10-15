@@ -109,7 +109,7 @@ void readRIDF(std::string ridf_file_name, std::string output_file_name, u_int64_
 
 int main(int argc, char **argv)
 {
-    if (argc < 4)
+    if (argc < 3)
     {
         std::cout << "Usage: ridfblock2parquet [input_file] [output_file] [n_block(optional)]" << std::endl;
         return 1;
